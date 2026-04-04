@@ -7,7 +7,7 @@ const Button = (props) => (
     {props.text}
   </button>
 )
-const Print = (props) => <div>{props.text} {props.value} {props.symbol}</div>
+const StatisticsLine = (props) => <div>{props.text} {props.value} {props.symbol}</div>
 
 const Statistics = (props) => {
   const good = props.good
@@ -16,9 +16,9 @@ const Statistics = (props) => {
 
   return(
     <div>
-      <Print text="All" value={good + neutral + bad} symbol="" />
-      <Print text="Average" value={(good - bad) / (good + neutral + bad)} symbol="" /> 
-      <Print text="Positive" value={good / (good + neutral + bad) * 100} symbol="%" />
+      <StatisticsLine text="All" value={good + neutral + bad} symbol="" />
+      <StatisticsLine text="Average" value={(good - bad) / (good + neutral + bad)} symbol="" /> 
+      <StatisticsLine text="Positive" value={good / (good + neutral + bad) * 100} symbol="%" />
     </div>
   )
 }
@@ -37,10 +37,16 @@ const App = () => {
       <Button onClick={() => setNeutral(neutral + 1)} text="neutral" />
       <Button onClick={() => setBad(bad + 1)} text="bad" />
       <Heading text="statistics" />
-      <Print text="good" value={good} />
-      <Print text="neutral" value={neutral} />
-      <Print text="bad" value={bad} />
-      { (good !== 0 || neutral !== 0 || bad !== 0) ? <Statistics good={good} neutral={neutral} bad={bad} /> : <Print text="No feedback given" value="" symbol="(👉ﾟヮﾟ)👉" /> }
+
+      { (good !== 0 || neutral !== 0 || bad !== 0) 
+        ? <> 
+          <StatisticsLine text="good" value={good} />
+          <StatisticsLine text="neutral" value={neutral} />
+          <StatisticsLine text="bad" value={bad} />
+          <Statistics good={good} neutral={neutral} bad={bad} /> 
+          </>
+        : <StatisticsLine text="No feedback given" value="" symbol="(👉ﾟヮﾟ)👉" /> 
+      }
     </div>
 
   )
