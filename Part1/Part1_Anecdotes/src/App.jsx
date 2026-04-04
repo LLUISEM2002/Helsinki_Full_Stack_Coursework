@@ -11,6 +11,7 @@ const RNG = (max) => {
   return x
 }
 
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often.',
@@ -24,13 +25,24 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
 
   return (
     <>
       <div>
         {anecdotes[selected]}
       </div>
+      <div>
+        has {votes[selected]} votes
+      </div>
+      <Button handleClick={() => {
+        const copy = [...votes]
+        copy[selected] += 1
+        setVotes(copy)
+        console.log(copy)
+      }} text="vote" />
       <Button handleClick={() => setSelected(RNG(anecdotes.length))} text="next anecdote" />
+
     </>
   )
 }
