@@ -14,6 +14,7 @@ const Part = (props) => (
   </p>
 )
 
+
 const Total = (props) => <p><b>total of {props.total} exercises</b></p>
 
 const Course = ({course}) => {
