@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', id: 1 }
+    { name: 'Arto Hellas'}
   ]) 
   const [newName, setNewName] = useState('')
 
@@ -14,8 +14,7 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     const personObject = {
-      name: newName,
-      id: persons.length + 1,
+      name: newName
     }
     setPersons(persons.concat(personObject))
     setNewName('')
@@ -35,7 +34,7 @@ const App = () => {
       <h2>Numbers</h2>
       <ul>
         {persons.map(person => 
-          <li key={person.id}>{person.name}</li>
+          <li key={person.name}>{person.name}</li>
         )}
       </ul>
       <div>debug: {newName}</div>
