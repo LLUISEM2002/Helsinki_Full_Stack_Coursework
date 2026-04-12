@@ -29,13 +29,18 @@ const PersonForm = ({ addPerson, newName, handleNameChange, newNumber, handleNum
 }
 
 
-const Persons = ({ persons, filter }) => {
+const Persons = ({ persons, filter, handleDelete }) => {
   return (
     <ul>
       {persons
         .filter(person => person.name.toLowerCase().includes(filter.toLowerCase()))
         .map(person => 
-          <li key={person.id}>{person.name}: {person.number}</li>
+          <li key={person.id}>
+            {person.name}: {person.number}
+            <button onClick={() => handleDelete(person.id, person.name)}>
+              delete
+            </button>
+          </li>
         )}
     </ul>
   )
@@ -89,13 +94,27 @@ const App = () => {
       })
   }
 
+  const handleDelete = (id, name) => {
+  if (window.confirm(`Delete ${name}?`)) {
+    contactService
+      .deleteContact(id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== id))
+      })
+      .catch(error => {
+        alert(`Information of ${name} has already been removed from server`)
+        setPersons(persons.filter(person => person.id !== id))
+          })
+      }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
       <Filter filter={filter} handleFilterChange={(event) => setFilter(event.target.value)} />
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} handleDelete={handleDelete}/>
     </div>
     
   )
