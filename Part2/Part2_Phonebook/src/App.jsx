@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import contactService from './services/contacts'
+import Notification from './components/Notification'
 
 const Filter = ({ filter, handleFilterChange }) => {
   return (
@@ -51,6 +52,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
+  const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
     contactService
@@ -84,6 +86,7 @@ const App = () => {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         contactService
           .update(persons.find(person => person.name === newName).id, personObject)
+          .then(setErrorMessage(`Changed ${newName}'s number to ${newNumber}`))
           .then(returnedPerson => {
             setPersons(persons.map(person => person.name !== newName ? person : returnedPerson))
             setNewName('')
@@ -94,6 +97,7 @@ const App = () => {
     }
     contactService
       .create(personObject)
+      .then(setErrorMessage(`Added ${newName}`))
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
         setNewName('')
@@ -105,19 +109,21 @@ const App = () => {
   if (window.confirm(`Delete ${name}?`)) {
     contactService
       .deleteContact(id)
+      .then(setErrorMessage(`Deleted ${name} successfully`))
       .then(() => {
         setPersons(persons.filter(person => person.id !== id))
       })
       .catch(error => {
-        alert(`Information of ${name} has already been removed from server`)
+        setErrorMessage(`Information of ${name} has already been removed from server`)
         setPersons(persons.filter(person => person.id !== id))
-          })
+      })
       }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter filter={filter} handleFilterChange={(event) => setFilter(event.target.value)} />
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
