@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-const Notification = ({ message }) => {
+const Notification = ({ message, success }) => {
     const [visible, setVisible] = useState(true)
 
     useEffect(() => {
@@ -18,7 +18,7 @@ const Notification = ({ message }) => {
     }
 
     return (
-        <div className='error'>
+        <div className={success ? 'errorSuccess' : 'errorFailure'}>
             {message}
         </div>
     )

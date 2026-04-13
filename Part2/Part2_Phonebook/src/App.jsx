@@ -53,6 +53,7 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setFilter] = useState('')
   const [errorMessage, setErrorMessage] = useState(null)
+  const [success, setSuccess] = useState(null)
 
   useEffect(() => {
     contactService
@@ -86,17 +87,24 @@ const App = () => {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         contactService
           .update(persons.find(person => person.name === newName).id, personObject)
+          .then(setSuccess(true))
           .then(setErrorMessage(`Changed ${newName}'s number to ${newNumber}`))
           .then(returnedPerson => {
             setPersons(persons.map(person => person.name !== newName ? person : returnedPerson))
             setNewName('')
             setNewNumber('')
           })
+          .catch(error => {
+            setSuccess(false)
+            setErrorMessage(`Information of ${newName} has already been removed from server`)
+            setPersons(persons.filter(person => person.name !== newName))
+          })
       }
       return
     }
     contactService
       .create(personObject)
+      .then(setSuccess(true))
       .then(setErrorMessage(`Added ${newName}`))
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
@@ -114,6 +122,7 @@ const App = () => {
         setPersons(persons.filter(person => person.id !== id))
       })
       .catch(error => {
+        setSuccess(false)
         setErrorMessage(`Information of ${name} has already been removed from server`)
         setPersons(persons.filter(person => person.id !== id))
       })
@@ -123,7 +132,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} success={success} />
       <Filter filter={filter} handleFilterChange={(event) => setFilter(event.target.value)} />
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h2>Numbers</h2>
