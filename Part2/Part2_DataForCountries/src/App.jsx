@@ -5,9 +5,29 @@ const printList = (list) => {
   return list.map((country, index) => <li key={country.name.common}>{country.name.common}</li>);
 }
 
+const printCountry = (country) => {
+  return (
+    <div>
+      <h1>{country.name.common}</h1>
+      <p>Capital: {country.capital?.[0]}</p>
+      <p>Area: {country.area}</p>
+
+        <h2>Languages</h2>
+        <ul>
+          {Object.values(country.languages).map(lang => (
+            <li key={lang}>{lang}</li>
+          ))}
+        </ul>
+
+        <img src={country.flags.png} alt="flag" width="150" />
+    </div>
+  )
+}
+
 const App = () => {
   const [countriesData, setCountriesData] = useState([])
   const [search, setSearch] = useState('')
+  const [selectedCountry, setSelectedCountry] = useState(null)
 
   console.log("App rendering")
 
@@ -37,7 +57,7 @@ const renderCountries = () => {
       <ul>
         {filteredCountries.map(country => (
           <li key={country.name.common}>
-            {country.name.common}
+            {country.name.common}<button onClick={() => setSelectedCountry(country)}>Show</button>
           </li>
         ))}
       </ul>
@@ -47,22 +67,7 @@ const renderCountries = () => {
   if (filteredCountries.length === 1) {
     const country = filteredCountries[0]
 
-    return (
-      <div>
-        <h1>{country.name.common}</h1>
-        <p>Capital: {country.capital?.[0]}</p>
-        <p>Area: {country.area}</p>
-
-        <h2>Languages</h2>
-        <ul>
-          {Object.values(country.languages).map(lang => (
-            <li key={lang}>{lang}</li>
-          ))}
-        </ul>
-
-        <img src={country.flags.png} alt="flag" width="150" />
-      </div>
-    )
+    return (printCountry(country))
   }
   return <p>No matches found</p>
 }
@@ -75,6 +80,7 @@ const renderCountries = () => {
         placeholder="Search countries..."
       />
       {renderCountries()}
+      {selectedCountry && printCountry(selectedCountry)}
     </div>
   )
 }
