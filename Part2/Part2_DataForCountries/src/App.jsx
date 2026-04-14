@@ -1,9 +1,31 @@
 import { useState, useEffect } from "react";
 import countries from "./services/countries";
+import { getWeather } from "./services/weather";
 
 const printList = (list) => {
   return list.map((country, index) => <li key={country.name.common}>{country.name.common}</li>);
 }
+
+const Weather = ({ capital }) => {
+  const [weatherData, setWeatherData] = useState(null)
+
+  useEffect(() => {
+    getWeather(capital).then(data => setWeatherData(data))
+  }, [capital])
+
+  console.log(weatherData)
+
+  if (!weatherData) return <p>Loading weather data...</p>
+
+  return (
+    <div>
+      <p>Temperature: {weatherData.main.temp} °C</p>
+      <img src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`} alt="Weather icon" />
+      <p>Wind: {weatherData.wind.speed} m/s</p>
+    </div>
+  )
+}
+
 
 const printCountry = (country) => {
   return (
@@ -20,6 +42,10 @@ const printCountry = (country) => {
         </ul>
 
         <img src={country.flags.png} alt="flag" width="150" />
+        <h2>Weather in {country.name.common}</h2>
+        <Weather capital={country.capital?.[0]} />
+
+
     </div>
   )
 }
